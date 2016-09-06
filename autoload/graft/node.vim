@@ -199,6 +199,6 @@ function graft#node#findVariableDefinition(var)
 endfunction
 
 function graft#node#highlightVariableProperty(str)
-  call search("\\(exports\\.\\|export.*\\)\\zs" . a:str . "\\ze = ")
+  call search('\(exports.\|export\.*\)\zs' . a:str . '\ze = ')
   call matchadd("Search", a:str)
 endfunction
