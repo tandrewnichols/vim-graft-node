@@ -9,13 +9,8 @@ let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
 	\ "readline", "repl", "smalloc", "stream", "string_decoder", "sys",
 	\ "timers", "tls", "tty", "url", "util", "vm", "zlib"]
 
-if !exists("g:js_suffixes")
-  let g:js_suffixes = ["js", "json", "coffee", "es6", "es", "jsx", "yml", "css", "less", "md"]
-endif
-
-if !exists("g:graft_node_find_variable")
-  let g:graft_node_find_variable = 1
-endif
+let g:graft_node_js_suffixes = get(g:, "graft_node_js_suffixes", ["js", "json", "coffee", "es6", "es", "jsx", "yml", "css", "less", "md"])
+let g:graft_node_find_variable = get(g:, "graft_node_find_variable", 1)
 
 function graft#node#load()
   let file = ""
@@ -163,9 +158,9 @@ function graft#node#nodeRequireTree(path, ...)
 endfunction
 
 function graft#node#tryNodeExtensions(path)
-  let matches = glob(a:path . "\.{" . join(g:js_suffixes, ",") . "}", 0, 1)
+  let matches = glob(a:path . "\.{" . join(g:graft_node_js_suffixes, ",") . "}", 0, 1)
   if len(matches) > 0
-    for ext in g:js_suffixes
+    for ext in g:graft_node_js_suffixes
       let maybeMatch = match(matches, "\." . ext . "$")
       if maybeMatch > -1
         return matches[maybeMatch]
