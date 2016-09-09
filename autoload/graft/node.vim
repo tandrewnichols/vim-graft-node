@@ -61,7 +61,6 @@ endfunction
 function graft#node#resolveRequiredFile(req)
   if !empty(a:req)
     let filename = graft#node#resolveViaRequire(a:req)
-    echom filename
     if empty(filename) || !graft#hasPathSeparator(filename)
       let filename = graft#resolveRelativeToCurrentFile(a:req)
       return graft#node#nodeRequireTree(filename, a:req)
