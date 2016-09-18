@@ -11,12 +11,15 @@ let s:CORE_MODULES = ["_debugger", "_http_agent", "_http_client",
 
 let g:graft_node_js_suffixes = get(g:, "graft_node_js_suffixes", ["js", "json", "coffee", "es6", "es", "jsx", "yml", "css", "less", "md"])
 let g:graft_node_find_variable = get(g:, "graft_node_find_variable", 1)
+let g:graft_node_strict_cursor_placement = get(g:, "graft_node_strict_cursor_placement", 0)
 
 function graft#node#load()
   let file = ""
-  if graft#node#lineContainsRequire() || graft#node#lineContainsImport()
-    let req = graft#node#extractRequiredFilename()
-    let file = graft#node#resolveRequiredFile(req)
+  if !g:graft_node_strict_cursor_placement
+    if graft#node#lineContainsRequire() || graft#node#lineContainsImport()
+      let req = graft#node#extractRequiredFilename()
+      let file = graft#node#resolveRequiredFile(req)
+    endif
   endif
 
   if empty(file) && g:graft_node_find_variable
