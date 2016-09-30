@@ -14,25 +14,27 @@ let g:graft_node_find_variable = get(g:, "graft_node_find_variable", 1)
 let g:graft_node_strict_cursor_placement = get(g:, "graft_node_strict_cursor_placement", 0)
 
 function graft#node#load()
-  let file = ""
+  let matched = {}
   if !g:graft_node_strict_cursor_placement
     if graft#node#lineContainsRequire() || graft#node#lineContainsImport()
       let req = graft#node#extractRequiredFilename()
-      let file = graft#node#resolveRequiredFile(req)
+      let matched.file = graft#node#resolveRequiredFile(req)
     endif
   endif
 
-  if empty(file) && g:graft_node_find_variable
+  if !has_key(matched, 'file') && g:graft_node_find_variable
     let [ var, prop ] = graft#node#getVariableUnderCursor()
     let line = graft#node#findVariableDefinition(var)
     if line != 0
       let req = graft#node#extractRequiredFilenameFrom(getline(line))
-      let Callback = graft#createCallback("graft#node#highlightVariableProperty", [prop])
-      let file = [ graft#node#resolveRequiredFile(req), Callback ]
+      let matched.file = graft#node#resolveRequiredFile(req)
+      if !empty(prop)
+        let matched.Action = graft#createCallback("graft#node#highlightVariableProperty", [prop])
+      endif
     endif
   endif
 
-  return file
+  return matched
 endfunction
 
 function graft#node#lineContainsRequire()
